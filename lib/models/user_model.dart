@@ -12,7 +12,6 @@ class UserResponseModel {
     token = json['token'];
     expiration = json['expiration'];
     user = json['user'] != null ? new UserModel.fromJson(json['user']) : null;
-
     userRoles = json['userRoles'].cast<String>();
     status = json['status'];
   }

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:school_management_system/configs/colors.dart';
 import 'package:school_management_system/helper_services/navigation_services.dart';
 import 'package:school_management_system/helper_widgets/custom_drawer_screen.dart';
-import 'package:school_management_system/moduls/admin_modules/dashboard_widgets/admin_assign_tutorials_screen.dart';
-import 'package:school_management_system/moduls/admin_modules/dashboard_widgets/create_admin.dart';
-import 'package:school_management_system/moduls/admin_modules/dashboard_widgets/create_class.dart';
-import 'package:school_management_system/moduls/admin_modules/dashboard_widgets/create_teacher_admin.dart';
-import 'package:school_management_system/moduls/admin_modules/drawer_screens/create_class_screen.dart';
 import 'package:school_management_system/moduls/auth/login_screen.dart';
+import 'dashboard_widgets/admin_assign_class_to_teeacher_screen.dart';
+import 'dashboard_widgets/admin_create_class.dart';
+import 'dashboard_widgets/admin_home.dart';
+import 'dashboard_widgets/create_teacher_admin.dart';
+import 'drawer_screens/view_tutorials_screen.dart';
 
 
 class AdminDrawer extends StatefulWidget {
@@ -35,12 +36,24 @@ class _AdminDrawerState extends State<AdminDrawer> {
               color: bgColor,
             ),
             CustomDrawerScreen(
+              title: "Home Screen",
+              icon: Icons.home,
+              onTap: (){
+                Navigator.pop(context);
+                NavigationServices.goNextAndKeepHistory(
+                    context: context, widget: AdminHomeScreen(
+                  isShow: false,
+                ));
+                setState(() {});
+              },
+            ),
+            CustomDrawerScreen(
                 title: "Create Class",
                 icon: Icons.view_compact_alt,
               onTap: (){
                 Navigator.pop(context);
                 NavigationServices.goNextAndKeepHistory(
-                    context: context, widget: CreateClassScreen(
+                    context: context, widget: CreateClassAdminScreen(
                   isShow: false,
                 ));
                 setState(() {});
@@ -59,33 +72,24 @@ class _AdminDrawerState extends State<AdminDrawer> {
               },
             ),
             CustomDrawerScreen(
-              title: "Assign Subject to ecaher",
+              title: "Assign Class to Tecaher",
               icon: Icons.subject,
               onTap: (){
                 Navigator.pop(context);
                 NavigationServices.goNextAndKeepHistory(
-                    context: context, widget: AssignSubjectByAdminScreen(
+                    context: context, widget: AssignClassToTeachertByAdminScreen(
                   isShow: false,
                 ));
                 setState(() {});
               },
             ), CustomDrawerScreen(
-              title: "View Tutorils",
+              title: "View Tutorials",
               icon: Icons.video_library,
               onTap: (){
                 Navigator.pop(context);
                 NavigationServices.goNextAndKeepHistory(
-                    context: context, widget: AdminTutorialsScreen(
-                  isShow: false,
+                    context: context, widget: ViewTutorials(
                 ));
-                setState(() {});
-              },
-            ), CustomDrawerScreen(
-              title: "Assign Tutorials",
-              icon: Icons.video_library,
-              onTap: (){
-                Navigator.pop(context);
-                NavigationServices.goNextAndKeepHistory(context: context, widget: AssignTutorials());
                 setState(() {});
               },
             ),
@@ -99,6 +103,7 @@ class _AdminDrawerState extends State<AdminDrawer> {
         leading:Icon(Icons.logout,color: Colors.red,),
         title: Text("LogOut",style: TextStyle(color: Colors.red),),
         onTap: (){
+          GetStorage().remove('token');
           NavigationServices.goNextAndDoNotKeepHistory(context: context, widget: LoginScreen());
         },
       ),

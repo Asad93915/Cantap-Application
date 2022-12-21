@@ -34,11 +34,11 @@ class AddTeachersService {
         return true;
       }
       else{
-        return null;
+        return false;
       }
     } catch (err) {
       print("Objection in Create Class Service $err");
-      return null;
+      return false;
     }
   }
 }

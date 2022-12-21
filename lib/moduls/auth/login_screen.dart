@@ -5,12 +5,12 @@ import 'package:school_management_system/helper_services/custom_loader.dart';
 import 'package:school_management_system/helper_services/custom_snackbar.dart';
 import 'package:school_management_system/helper_services/navigation_services.dart';
 import 'package:school_management_system/helper_widgets/custom_text_field.dart';
-import 'package:school_management_system/moduls/admin_modules/admin_home/admin_dashboard.dart';
+import 'package:school_management_system/moduls/teacher_module/teacher_dashboard/teacher_dashboard.dart';
 import 'package:school_management_system/services/login_services.dart';
 import '../../configs/text_styles.dart';
 import '../../helper_widgets/custom_button.dart';
-import '../home/home_dashboard_screen.dart';
-import '../principle_module/principle_dashboard_screen.dart';
+import '../admin_modules/admin_dashboard/admin_dashboard.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,24 +20,32 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _userNameCont=TextEditingController(text: "admin" /*"super.admin"*/);
-  TextEditingController _passwordCont=TextEditingController(text: "admin" /*"SuperAdmin@123!"*/);
+  TextEditingController _userNameCont=TextEditingController(
+    text: "teacher"
+  );
+  TextEditingController _passwordCont=TextEditingController(
+      text: "teacher"
+  );
   FocusNode _nameFocus=FocusNode();
   FocusNode _passwordFocus=FocusNode();
 
   _loginHandler()async{
     CustomLoader.showLoader(context: context);
-    print("In");
-    bool res=await LoginApiServices().getLogin(context: context, userName: _userNameCont.text, password: _passwordCont.text);
-    print("Out");
+    List<String> list=await LoginApiServices().getLogin(context: context, userName: _userNameCont.text, password: _passwordCont.text);
     CustomLoader.hideLoader(context);
-    print("OutSide");
-    if(res){
-      NavigationServices.goNextAndDoNotKeepHistory(context: context, widget: AdminDashBoard(),
-      //NavigationServices.goNextAndDoNotKeepHistory(context: context, widget: HomeDashboardScreen()
-    );
+    if(list.isEmpty){
 
+    }else{
+      if(list[0].contains("Admin"))
+      {
+        NavigationServices.goNextAndDoNotKeepHistory(context: context, widget: AdminDashBoard(),);
+      }else if(list[0].contains("Teacher")){
+        NavigationServices.goNextAndDoNotKeepHistory(context: context, widget: TeacherDashBoard(),);
+      }else{
+        print("role of user $list");
+      }
     }
+
   }
   @override
   Widget build(BuildContext context) {
@@ -82,26 +90,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontWeight: FontWeight.bold,
                 verticalMargin: 6.0,
                 onTap: (){
-                    // _loginHandler();
-
-                    NavigationServices.goNextAndDoNotKeepHistory(context: context, widget: AdminDashBoard(),
-                  );
+                  if(_validateLogin()){
+                    _loginHandler();
+                  }
                 },
               )
-
             ],
           ),
         ),
       ),
       bottomNavigationBar: Container(
-
         height: kToolbarHeight*2.0,
         width: double.infinity,
         child: Image.asset("assets/images/login_bottom_header.png",fit: BoxFit.fill,)
       ),
     );
   }
-  _validateLogin()async{
+  _validateLogin(){
     if(_userNameCont.text.isEmpty){
       CustomSnackBar.failedSnackBar(context: context, message: "Enter Valid UserName");
       _nameFocus.requestFocus();

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:school_management_system/configs/colors.dart';
+import 'package:school_management_system/helper_services/custom_snackbar.dart';
 import 'package:school_management_system/helper_widgets/custom_text_field.dart';
-
+import 'package:school_management_system/providers/user_date_provider.dart';
 import '../../../configs/text_styles.dart';
 import '../../../helper_services/custom_loader.dart';
 import '../../../helper_widgets/custom_button.dart';
@@ -50,29 +52,29 @@ class _CreateTeacherState extends State<CreateTeacher> {
 
   String selectedSubject="";
 
-  List classListItem = [
-
-    {
-      "id": 0,
-      "value": false,
-      "title": "Class 1",
-    },
-    {
-      "id": 1,
-      "value": false,
-      "title": "Class 2",
-    },
-    {
-      "id": 2,
-      "value": false,
-      "title": "Class 3",
-    },
-    {
-      "id": 3,
-      "value": false,
-      "title": "Class 4",
-    },
-  ];
+  // List classListItem = [
+  //
+  //   {
+  //     "id": 0,
+  //     "value": false,
+  //     "title": "Class 1",
+  //   },
+  //   {
+  //     "id": 1,
+  //     "value": false,
+  //     "title": "Class 2",
+  //   },
+  //   {
+  //     "id": 2,
+  //     "value": false,
+  //     "title": "Class 3",
+  //   },
+  //   {
+  //     "id": 3,
+  //     "value": false,
+  //     "title": "Class 4",
+  //   },
+  // ];
   bool isChecked=false;
   bool isChecked1=false;
 
@@ -80,19 +82,26 @@ class _CreateTeacherState extends State<CreateTeacher> {
   TextEditingController _userNameCont=TextEditingController();
   TextEditingController _passwordCont=TextEditingController();
   TextEditingController _emailCont=TextEditingController();
-  _createClassHandler() async {
+  _createTeacherHandler() async {
     CustomLoader.showLoader(context: context);
-    await  AddTeachersService().AddTeacher(
+   bool res= await  AddTeachersService().AddTeacher(
         context: context,
         teacherName: _teacherNameCont.text,
         userName: _userNameCont.text,
         password: _passwordCont.text,
         email: _emailCont.text,
         imageUrl: "",
-        role: "Admin",
+        role: "Teacher",
         phoneNo: "",
-        about: "", schoolId: 1);
+        about: "", schoolId: Provider.of<UserDataProvider>(context,listen: false).user!.schoolId!);
     CustomLoader.hideLoader(context);
+    if(res){
+      CustomSnackBar.showSnackBar(context: context, message: "Teacher Created succefully");
+      _teacherNameCont.clear();
+      _userNameCont.clear();
+      _passwordCont.clear();
+      _emailCont.clear();
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -134,7 +143,20 @@ class _CreateTeacherState extends State<CreateTeacher> {
             inputAction: TextInputAction.next,
           ),
 
+      Center(
+          child: CustomButton(
+            width: 200,
+            verticalMargin: 12.0,
+            text: "Submit",
+            onTap: () {
 
+              _createTeacherHandler();
+              setState((){});
+            },
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
 
 
         ],
