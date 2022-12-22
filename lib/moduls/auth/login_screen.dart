@@ -20,21 +20,34 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _userNameCont=TextEditingController(
+  TextEditingController _adminNameCont=TextEditingController(
     text: "teacher"
   );
-  TextEditingController _passwordCont=TextEditingController(
+  TextEditingController _adminpaswordCont=TextEditingController(
       text: "teacher"
   );
-  FocusNode _nameFocus=FocusNode();
-  FocusNode _passwordFocus=FocusNode();
+  FocusNode _adminNameFocus=FocusNode();
+  FocusNode _adminpasswordFocus=FocusNode();
+
+  TextEditingController _stdNameCont=TextEditingController(
+
+  );
+  TextEditingController _stdPaswordCont=TextEditingController(
+
+  );
+  TextEditingController _stdrollNoCont=TextEditingController(
+
+  );
+  FocusNode _stdNameFocus=FocusNode();
+  FocusNode _stdpasswordFocus=FocusNode();
 
   _loginHandler()async{
     CustomLoader.showLoader(context: context);
-    List<String> list=await LoginApiServices().getLogin(context: context, userName: _userNameCont.text, password: _passwordCont.text);
+    List<String> list=await LoginApiServices().getLogin(context: context, userName: _adminNameCont.text, password: _adminpaswordCont.text);
     CustomLoader.hideLoader(context);
     if(list.isEmpty){
 
+      CustomSnackBar.failedSnackBar(context: context, message: "Try Again");
     }else{
       if(list[0].contains("Admin"))
       {
@@ -47,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
   }
+  int selectedIndex=0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,35 +80,108 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset("assets/images/app_logo.jpg",height: 100.0,fit: BoxFit.fill,),
-              Text("Welcome To SMS!",style: smsStyle,),
-              CustomTextField(
+              // Image.asset("assets/images/app_logo.jpg",height: 100.0,fit: BoxFit.fill,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                      onTap: (){
+                        selectedIndex=0;
+                        setState(() {
 
-                labelText: "UserName",
-                controller: _userNameCont,
-                inputAction: TextInputAction.next,
+                        });
 
+                      },
+                      child: Image.asset("assets/images/staff.png",height: 100.0,width: 100.0,fit: BoxFit.fill,)),
+                  SizedBox(width: 10.0,),
+                  InkWell(
+                     onTap: (){
+                       selectedIndex=1;
+                       setState(() {
 
+                       });
+                     },
+                      child: Image.asset("assets/images/staff.png",height: 100.0,width: 100.0,fit: BoxFit.fill,)),
+
+                ],
               ),
-              CustomTextField(
-                labelText: "Password",
-                controller: _passwordCont,
-                inputType: TextInputType.visiblePassword,
+
+
+             if(selectedIndex==0)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("Welcome To STAFF!",style: smsStyle,textAlign: TextAlign.center,),
+                  CustomTextField(
+
+                  labelText: "UserName",
+                  controller: _adminNameCont,
+                  inputAction: TextInputAction.next,
+
+
+                ),
+                  CustomTextField(
+                    labelText: "Password",
+                    controller: _adminpaswordCont,
+                    inputType: TextInputType.visiblePassword,
+                  ),
+                  TextButton(onPressed: (){
+                  }, child: Text("Forgot Your Password",style: TextStyle(color: lightBlackColor,fontSize: 16.0,fontWeight: FontWeight.w600),),),
+                  CustomButton(
+                    width: double.infinity,
+                    text: "Login",
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    verticalMargin: 6.0,
+                    onTap: (){
+                      if(_validateLogin()){
+                        _loginHandler();
+                      }
+                    },
+                  ),],
               ),
-              TextButton(onPressed: (){
-              }, child: Text("Forgot Your Password",style: TextStyle(color: lightBlackColor,fontSize: 16.0,fontWeight: FontWeight.w600),),),
-              CustomButton(
-                width: double.infinity,
-                text: "Login",
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                verticalMargin: 6.0,
-                onTap: (){
-                  if(_validateLogin()){
-                    _loginHandler();
-                  }
-                },
-              )
+              if(selectedIndex==1)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Welcome To STUDENTS!",style: smsStyle,textAlign: TextAlign.center,),
+                    CustomTextField(
+
+                    labelText: "UserName",
+                    controller: _stdNameCont,
+                    inputAction: TextInputAction.next,
+
+
+                  ),
+                    CustomTextField(
+                      labelText: "Password",
+                      controller: _stdPaswordCont,
+                      inputType: TextInputType.visiblePassword,
+                    ),
+                    CustomTextField(
+                      labelText: "Roll Number",
+                      controller: _stdrollNoCont,
+                      inputType: TextInputType.visiblePassword,
+                    ),
+                    TextButton(onPressed: (){
+                    }, child: Text("Forgot Your Password",style: TextStyle(color: lightBlackColor,fontSize: 16.0,fontWeight: FontWeight.w600),),),
+                    CustomButton(
+                      width: double.infinity,
+                      text: "Login",
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      verticalMargin: 6.0,
+                      onTap: (){
+                        if(_validateLogin()){
+                          _loginHandler();
+                        }
+                      },
+                    ),],
+                ),
+
             ],
           ),
         ),
@@ -107,14 +194,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
   _validateLogin(){
-    if(_userNameCont.text.isEmpty){
+    if(_adminNameCont.text.isEmpty){
       CustomSnackBar.failedSnackBar(context: context, message: "Enter Valid UserName");
-      _nameFocus.requestFocus();
+      _adminNameFocus.requestFocus();
       return false;
     }
-    else if(_passwordCont.text.isEmpty){
+    else if(_adminpaswordCont.text.isEmpty){
       CustomSnackBar.failedSnackBar(context: context, message: "Enter Valid Password");
-      _passwordFocus.requestFocus();
+      _adminpasswordFocus.requestFocus();
       return  false;
     }
     else{
