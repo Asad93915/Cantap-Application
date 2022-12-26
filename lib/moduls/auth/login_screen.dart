@@ -93,7 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
 
                       },
-                      child: Image.asset("assets/images/staff.png",height: 100.0,width: 100.0,fit: BoxFit.fill,)),
+                      child: Container(
+
+                        decoration: BoxDecoration(
+                          border: Border.all(color: selectedIndex!=0?blackColor:bgColor,width: 2.0),
+                          borderRadius: BorderRadius.circular(10.0)
+                        ),
+                          child: Image.asset("assets/images/staff.png",height: 100.0,width: 100.0,fit: BoxFit.fill,))),
                   SizedBox(width: 10.0,),
                   InkWell(
                      onTap: (){
@@ -102,7 +108,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                        });
                      },
-                      child: Image.asset("assets/images/staff.png",height: 100.0,width: 100.0,fit: BoxFit.fill,)),
+                      child: Container(
+
+                          decoration: BoxDecoration(
+                              border: Border.all(color: selectedIndex==1?bgColor:blackColor,width: 2.0),
+                              borderRadius: BorderRadius.circular(10.0)
+                          ),
+                          child: Image.asset("assets/images/student.png",height: 100.0,width: 100.0,fit: BoxFit.fill,))),
 
                 ],
               ),
@@ -151,6 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     CustomTextField(
 
                     labelText: "UserName",
+                    hintText: "Enter UserName",
                     controller: _stdNameCont,
                     inputAction: TextInputAction.next,
 
@@ -158,11 +171,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                     CustomTextField(
                       labelText: "Password",
+                      hintText:"Enter Password" ,
                       controller: _stdPaswordCont,
                       inputType: TextInputType.visiblePassword,
                     ),
                     CustomTextField(
                       labelText: "Roll Number",
+                      hintText: "Enter Roll Number",
                       controller: _stdrollNoCont,
                       inputType: TextInputType.visiblePassword,
                     ),
